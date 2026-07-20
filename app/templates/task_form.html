@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="panel form-panel">
+    <div class="form-heading">
+        <div>
+            <span class="eyebrow">Form Data</span>
+            <h2>{{ page_title }}</h2>
+        </div>
+        <a class="button secondary" href="{{ url_for('main.index') }}">Kembali</a>
+    </div>
+
+    <form method="post" class="task-form">
+        {% set current_title = form_data.get('title', task.title if task else '') %}
+        {% set current_description = form_data.get('description', task.description if task else '') %}
+        {% set current_status = form_data.get('status', task.status if task else 'pending') %}
+
+        <label>
+            Judul tugas
+            <input
+                type="text"
+                name="title"
+                minlength="3"
+                maxlength="100"
+                required
+                value="{{ current_title }}"
+                placeholder="Contoh: Menyusun laporan UAS">
+        </label>
+
+        <label>
+            Deskripsi
+            <textarea
+                name="description"
+                maxlength="500"
+                rows="5"
+                placeholder="Tuliskan penjelasan singkat tugas">{{ current_description or '' }}</textarea>
+        </label>
+
+        <label>
+            Status
+            <select name="status" required>
+                <option value="pending" {% if current_status == 'pending' %}selected{% endif %}>Pending</option>
+                <option value="in_progress" {% if current_status == 'in_progress' %}selected{% endif %}>Sedang dikerjakan</option>
+                <option value="done" {% if current_status == 'done' %}selected{% endif %}>Selesai</option>
+            </select>
+        </label>
+
+        <button class="button primary" type="submit">Simpan Data</button>
+    </form>
+</section>
+{% endblock %}

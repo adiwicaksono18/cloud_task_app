@@ -1,0 +1,1 @@
+Nama: [ISI NAMA]\nNIM: [ISI NIM]\nKelas: [ISI KELAS]\n

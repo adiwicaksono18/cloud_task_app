@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block content %}
+<section class="hero-card">
+    <div>
+        <span class="eyebrow">Dashboard</span>
+        <h2>Daftar Tugas</h2>
+        <p>Kelola data tugas melalui operasi tambah, tampil, ubah, dan hapus.</p>
+    </div>
+    <a class="button primary" href="{{ url_for('main.create_task') }}">+ Tambah Tugas</a>
+</section>
+
+<section class="stats">
+    <article>
+        <strong>{{ tasks|length }}</strong>
+        <span>Total tugas</span>
+    </article>
+    <article>
+        <strong>{{ tasks|selectattr('status', 'equalto', 'pending')|list|length }}</strong>
+        <span>Belum dikerjakan</span>
+    </article>
+    <article>
+        <strong>{{ tasks|selectattr('status', 'equalto', 'done')|list|length }}</strong>
+        <span>Selesai</span>
+    </article>
+</section>
+
+<section class="panel">
+    {% if tasks %}
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Judul</th>
+                        <th>Deskripsi</th>
+                        <th>Status</th>
+                        <th>Dibuat</th>
+                        <th>Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for task in tasks %}
+                    <tr>
+                        <td><strong>{{ task.title }}</strong></td>
+                        <td>{{ task.description or "-" }}</td>
+                        <td>
+                            <span class="status {{ task.status }}">
+                                {% if task.status == "pending" %}Pending
+                                {% elif task.status == "in_progress" %}Dikerjakan
+                                {% else %}Selesai{% endif %}
+                            </span>
+                        </td>
+                        <td>{{ task.created_at.strftime("%d-%m-%Y %H:%M") }}</td>
+                        <td class="actions">
+                            <a class="button secondary small" href="{{ url_for('main.edit_task', task_id=task.id) }}">Ubah</a>
+                            <form method="post" action="{{ url_for('main.delete_task', task_id=task.id) }}" onsubmit="return confirm('Hapus tugas ini?');">
+                                <button class="button danger small" type="submit">Hapus</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="empty-state">
+            <h3>Belum ada data tugas</h3>
+            <p>Tambahkan data pertama untuk menguji koneksi aplikasi dengan database.</p>
+            <a class="button primary" href="{{ url_for('main.create_task') }}">Tambah Data Pertama</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
